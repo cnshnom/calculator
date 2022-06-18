@@ -1,8 +1,10 @@
+import React from 'react';
 import "./Wrapper.css";
 
-const Wrapper = ({children})=>{
- return <div className="wrapper">{children}</div>
-
+class Wrapper extends React.Component {
+    render() {
+        return <div className="wrapper">{this.props.children}</div>
+    }
 };
 
 export default Wrapper;

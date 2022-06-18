@@ -5,7 +5,6 @@ import Screen from "./components/Screen";
 import ButtonBox from "./components/ButtonBox";
 import Button from "./components/Button";
 import { useState } from 'react';
-import { Stack } from 'react-bootstrap';
 
 
 const btnValues = [
@@ -22,9 +21,10 @@ function App() {
     sign: "",
     num: 0,
     res: 0,
+    loadedKeyListener: 0,
   });
 
-  const numClickHandler = (e)=>{
+  const numClickHandler = (e) => {
     e.preventDefault();
     // e is an event object
     // target is the object that created the event
@@ -36,93 +36,106 @@ function App() {
         //only num and res change.
         num:
           calc.num === 0 && value === "0"
-          ? "0"
-          :calc.num % 1 === 0
-          ?Number(calc.num+value)
-          :calc.num+value,
-        
-        res:!calc.sign ? 0:calc.res,
+            ? "0"
+            : calc.num % 1 === 0
+              ? Number(calc.num + value)
+              : calc.num + value,
+
+        res: !calc.sign ? 0 : calc.res,
       }
     )
   };
-  const resetClickHandler = (e)=>{
+  const resetClickHandler = (e) => {
     e.preventDefault();
     setCalc({
       ...calc,
       res: 0,
       num: 0,
-      sign: ""
+      sign: "",
     });
   };
 
-  const invertClickHandler = (e)=>{
+  const invertClickHandler = (e) => {
     e.preventDefault();
 
     setCalc({
       ...calc,
-      num: calc.num*(-1),
-      res: calc.res*(-1)
+      num: calc.num * (-1),
+      res: calc.res * (-1)
     });
   };
-  const percentClickHandler = (e)=>{
+  const percentClickHandler = (e) => {
     e.preventDefault();
     let num = parseFloat(calc.num);
     let res = parseFloat(calc.res);
 
     setCalc({
       ...calc,
-      num:num/100 ,
-      res:res/100
+      num: num / 100,
+      res: res / 100
     });
   };
-  const equalsClickHandler = (e)=>{
+  const equalsClickHandler = (e) => {
     e.preventDefault();
-    if (calc.sign && calc.num){
-      const math = (a,b,sign)=>
+    if (calc.sign && calc.num) {
+      const math = (a, b, sign) =>
         sign === "+"
-        ? a+b
-        : sign === "-"
-        ? a-b
-        : sign === "X"
-        ? a*b
-        : a/b;
+          ? a + b
+          : sign === "-"
+            ? a - b
+            : sign === "X"
+              ? a * b
+              : a / b;
       setCalc({
         ...calc,
         res: math(Number(calc.res), Number(calc.num), calc.sign),
         sign: "",
-        num:0
+        num: 0
       });
-     
+
 
     }
   };
 
-  const signClickHandler = (e)=>{
+  const signClickHandler = (e) => {
     e.preventDefault();
     const value = e.target.innerHTML;
 
     setCalc({
       ...calc,
-      sign:value,
-      res: !calc.res && calc.num?calc.num:calc.res,
-      num:0
+      sign: value,
+      res: !calc.res && calc.num ? calc.num : calc.res,
+      num: 0
     });
   };
 
-  const commaClickHandler = (e)=>{
+  const commaClickHandler = (e) => {
     e.preventDefault();
     setCalc({
       ...calc,
-      num:!calc.num.toString().includes(".")?calc.num+".":calc.num,
+      num: !calc.num.toString().includes(".") ? calc.num + "." : calc.num,
     });
   };
 
-  
-
+  const keypressHandler = e => {
+    let key = e.key;
+    if (key.length === 1 && '0' <= key[0] && key[0] <= '9') {
+      setCalc({
+        ...calc,
+        num: Number(calc.num + key),
+        res: !calc.sign ? 0 : calc.res,
+      });
+      console.log(e.key);
+    }
+    document.body.removeEventListener('keyup', keypressHandler);
+  };
+  document.addEventListener('keyup', e => {
+    keypressHandler(e)
+  }, { once: true });
 
   return (
     <Wrapper>
-      <Screen value={calc.num? calc.num:calc.res}></Screen>
+      <Screen value={calc.num ? calc.num : calc.res}></Screen>
       <ButtonBox>
         {
           btnValues.flat().map((btn, i) => {
@@ -132,25 +145,25 @@ function App() {
                 className={btn === "=" ? "equals" : ""}
                 onClick={
                   btn === "C"
-                  ? resetClickHandler
-                  : btn === "+-"
-                  ? invertClickHandler
-                  : btn === "%"
-                  ? percentClickHandler
-                  : btn === "="
-                  ? equalsClickHandler
-                  : btn === "/" || btn === "X" || btn === "-" || btn === "+"
-                  ? signClickHandler
-                  : btn === "."
-                  ? commaClickHandler
-                  : numClickHandler
+                    ? resetClickHandler
+                    : btn === "+-"
+                      ? invertClickHandler
+                      : btn === "%"
+                        ? percentClickHandler
+                        : btn === "="
+                          ? equalsClickHandler
+                          : btn === "/" || btn === "X" || btn === "-" || btn === "+"
+                            ? signClickHandler
+                            : btn === "."
+                              ? commaClickHandler
+                              : numClickHandler
                 }
                 value={btn}
               >
               </Button>
             );
           })
-      }
+        }
       </ButtonBox>
     </Wrapper>
   );
