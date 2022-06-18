@@ -5,15 +5,42 @@ import Screen from "./components/Screen";
 import ButtonBox from "./components/ButtonBox";
 import Button from "./components/Button";
 
+
+const btnValues = [
+
+  ["C", "+-", "%", "/"],
+  [7, 8, 9, "X"],
+  [4, 5, 6, "-"],
+  [1, 2, 3, "+"],
+  [0, ".", "="]
+
+];
+
+
+
 function App() {
   return (
     <Wrapper>
       <Screen value="baum"></Screen>
       <ButtonBox>
-        <Button className="" value="" onClick={() => {
-          console.log("clicked!");
-        }
-        }></Button>
+        {
+          btnValues.flat().map((btn, i) => {
+            return (
+              <Button
+                key={i}
+                className={btn === "=" ? "equals" : ""}
+                onClick={
+                  () => {
+                    console.log(`${btn} clicked!`);
+                  }
+
+                }
+                value={btn}
+              >
+              </Button>
+            );
+          })
+      }
       </ButtonBox>
     </Wrapper>
   );
