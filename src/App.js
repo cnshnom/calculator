@@ -5,6 +5,7 @@ import Screen from "./components/Screen";
 import ButtonBox from "./components/ButtonBox";
 import Button from "./components/Button";
 import { useState } from 'react';
+import { Stack } from 'react-bootstrap';
 
 
 const btnValues = [
@@ -46,16 +47,54 @@ function App() {
   };
   const resetClickHandler = (e)=>{
     e.preventDefault();
+    setCalc({
+      ...calc,
+      res: 0,
+      num: 0,
+      sign: ""
+    });
   };
 
   const invertClickHandler = (e)=>{
     e.preventDefault();
+
+    setCalc({
+      ...calc,
+      num: calc.num*(-1),
+      res: calc.res*(-1)
+    });
   };
   const percentClickHandler = (e)=>{
     e.preventDefault();
+    let num = parseFloat(calc.num);
+    let res = parseFloat(calc.res);
+
+    setCalc({
+      ...calc,
+      num:num/100 ,
+      res:res/100
+    });
   };
   const equalsClickHandler = (e)=>{
     e.preventDefault();
+    if (calc.sign && calc.num){
+      const math = (a,b,sign)=>
+        sign === "+"
+        ? a+b
+        : sign === "-"
+        ? a-b
+        : sign === "X"
+        ? a*b
+        : a/b;
+      setCalc({
+        ...calc,
+        res: math(Number(calc.res), Number(calc.num), calc.sign),
+        sign: "",
+        num:0
+      });
+     
+
+    }
   };
 
   const signClickHandler = (e)=>{
@@ -83,7 +122,7 @@ function App() {
 
   return (
     <Wrapper>
-      <Screen value={calc.num>0? calc.num:calc.res}></Screen>
+      <Screen value={calc.num? calc.num:calc.res}></Screen>
       <ButtonBox>
         {
           btnValues.flat().map((btn, i) => {
