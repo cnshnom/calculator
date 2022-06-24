@@ -21,7 +21,7 @@ function App() {
     sign: "",
     num: 0,
     res: 0,
-    loadedKeyListener: 0,
+    
   });
 
   const numClickHandler = (e) => {
@@ -117,23 +117,8 @@ function App() {
     });
   };
 
-  const keypressHandler = e => {
-    let key = e.key;
-    if (key.length === 1 && '0' <= key[0] && key[0] <= '9') {
-      setCalc({
-        ...calc,
-        num: Number(calc.num + key),
-        res: !calc.sign ? 0 : calc.res,
-      });
-      console.log(e.key);
-    }
-    document.body.removeEventListener('keyup', keypressHandler);
-  };
-  document.addEventListener('keyup', e => {
-    keypressHandler(e)
-  }, { once: true });
-
   return (
+   
     <Wrapper>
       <Screen value={calc.num ? calc.num : calc.res}></Screen>
       <ButtonBox>
